@@ -1,0 +1,55 @@
+{
+  "aip_version": "0.1.0",
+  "provider": {
+    "name": "HealthCalc",
+    "url": "https://healthcalc.example.com",
+    "description": "Free health calculators — BMI, BMR, body fat estimation, and more."
+  },
+  "intakes": [
+    {
+      "id": "bmi-calculator",
+      "name": "BMI Calculator",
+      "description": "Calculate Body Mass Index from height and weight. Returns BMI value and category. This is a non-binding, stateless calculation — no account or follow-up required.",
+      "endpoint": "https://healthcalc.example.com/api/aip/bmi",
+      "method": "POST",
+      "category": "tool/calculator",
+      "input_schema": {
+        "type": "object",
+        "required": ["height_inches", "weight_lbs"],
+        "properties": {
+          "height_inches": {
+            "type": "number",
+            "minimum": 36,
+            "maximum": 96,
+            "description": "Height in inches"
+          },
+          "weight_lbs": {
+            "type": "number",
+            "minimum": 50,
+            "maximum": 800,
+            "description": "Weight in pounds"
+          },
+          "age": {
+            "type": "integer",
+            "minimum": 2,
+            "maximum": 120,
+            "description": "Age in years (optional, for context)"
+          },
+          "sex": {
+            "type": "string",
+            "enum": ["male", "female"],
+            "description": "Biological sex (optional, for body fat estimation)"
+          }
+        }
+      },
+      "offer_type": "computed_result",
+      "binding_available": false,
+      "requires_auth": false,
+      "privacy": {
+        "data_retention": "none",
+        "pii_required": false,
+        "redacted_acceptable": true
+      }
+    }
+  ]
+}

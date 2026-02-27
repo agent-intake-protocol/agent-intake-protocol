@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Specification — Agent Intake Protocol (AIP)</title>
+  <meta name="description" content="Full technical specification for the Agent Intake Protocol v0.1.0. JSON Schemas, lifecycle, message formats, and implementation requirements.">
+  <link rel="icon" href="assets/img/aip-logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/img/aip-logo.svg" alt="AIP">
+        <span>AIP</span> Protocol
+      </a>
+      <button class="nav-toggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="whitepaper.html">White Paper</a></li>
+        <li><a href="specification.html" class="active">Specification</a></li>
+        <li><a href="examples.html">Examples</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="https://agentintake.io" class="nav-cta">Registry</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="page-with-toc">
+    <article class="prose">
+
+      <h1>AIP Specification</h1>
+      <p class="text-muted" style="font-size: 1.05rem;">
+        Version 0.1.0 &middot; Snapshot 2026-02-27 &middot; Status: Draft
+      </p>
+
+      <hr style="margin: 2rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+      <!-- Overview -->
+      <h2 id="overview">Overview</h2>
+
+      <p>The Agent Intake Protocol (AIP) defines a standard interface for AI agents to discover, submit intake data to, and receive structured offers from business service endpoints. This document is the authoritative technical specification.</p>
+
+      <h3>Terminology</h3>
+
+      <table>
+        <thead>
+          <tr><th>Term</th><th>Definition</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Agent</strong></td><td>An AI agent acting on behalf of a human user.</td></tr>
+          <tr><td><strong>Provider</strong></td><td>A business or service that implements AIP endpoints.</td></tr>
+          <tr><td><strong>Manifest</strong></td><td>The <code>agent-intake.json</code> file describing available intakes.</td></tr>
+          <tr><td><strong>Intake</strong></td><td>A structured data submission from an agent to a provider.</td></tr>
+          <tr><td><strong>Soft-contract</strong></td><td>A non-binding, structured offer returned by a provider.</td></tr>
+          <tr><td><strong>Bind</strong></td><td>The act of accepting an offer, converting it to an active relationship.</td></tr>
+          <tr><td><strong>PII</strong></td><td>Personally identifiable information (email, name, phone, etc.).</td></tr>
+        </tbody>
+      </table>
+
+      <!-- Lifecycle -->
+      <h2 id="lifecycle">Protocol Lifecycle</h2>
+
+      <div class="lifecycle" style="margin: 2rem 0;">
+        <div class="lifecycle-step">
+          <div class="lifecycle-circle">1</div>
+          <div class="lifecycle-label">Discover</div>
+        </div>
+        <div class="lifecycle-arrow">&rarr;</div>
+        <div class="lifecycle-step">
+          <div class="lifecycle-circle">2</div>
+          <div class="lifecycle-label">Submit</div>
+        </div>
+        <div class="lifecycle-arrow">&rarr;</div>
+        <div class="lifecycle-step">
+          <div class="lifecycle-circle">3</div>
+          <div class="lifecycle-label">Offer</div>
+        </div>
+        <div class="lifecycle-arrow">&rarr;</div>
+        <div class="lifecycle-step">
+          <div class="lifecycle-circle">4</div>
+          <div class="lifecycle-label">Review</div>
+        </div>
+        <div class="lifecycle-arrow">&rarr;</div>
+        <div class="lifecycle-step">
+          <div class="lifecycle-circle">5</div>
+          <div class="lifecycle-label">Bind</div>
+        </div>
+      </div>
+
+      <h3 id="stage-discover">Stage 1: Discover</h3>
+      <p>The agent sends an HTTP GET request to the provider's well-known path:</p>
+
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>GET https://{domain}/.well-known/agent-intake.json
+Accept: application/json</code></pre>
+      </div>
+
+      <p>The provider MUST respond with a valid manifest (see <a href="#manifest-schema">Manifest Schema</a>) and <code>Content-Type: application/json</code>.</p>
+
+      <p><strong>Requirements:</strong></p>
+      <ul>
+        <li>The path MUST be <code>/.well-known/agent-intake.json</code> per RFC 8615.</li>
+        <li>The response MUST be valid JSON conforming to the manifest schema.</li>
+        <li>CORS headers SHOULD be set to allow cross-origin agent access.</li>
+        <li>HTTPS is REQUIRED for production endpoints. HTTP is acceptable for local development only.</li>
+      </ul>
+
+      <h3 id="stage-submit">Stage 2: Submit</h3>
+      <p>The agent constructs an intake request and POSTs it to the intake endpoint specified in the manifest:</p>
+
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>POST {intake.endpoint}
+Content-Type: application/json
+
+{
+  "aip_version": "0.1.0",
+  "agent": {
+    "id": "agent-instance-id",
+    "platform": "anthropic",
+    "consent_scope": ["intake", "offer"]
+  },
+  "intake_data": {
+    // Fields conforming to intake.input_schema
+  },
+  "session_id": "uuid-v4"
+}</code></pre>
+      </div>
+
+      <p><strong>Requirements:</strong></p>
+      <ul>
+        <li>The <code>intake_data</code> object MUST conform to the <code>input_schema</code> declared in the manifest.</li>
+        <li>The <code>session_id</code> MUST be a UUID v4, generated by the agent.</li>
+        <li>The <code>consent_scope</code> array MUST include at least <code>"intake"</code>.</li>
+        <li>The agent SHOULD NOT include PII in <code>intake_data</code> unless the manifest's <code>privacy.pii_required</code> is <code>true</code>.</li>
+      </ul>
+
+      <h3 id="stage-offer">Stage 3: Offer</h3>
+      <p>The provider processes the intake and returns a soft-contract offer:</p>
+
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>{
+  "aip_version": "0.1.0",
+  "session_id": "uuid-v4",
+  "status": "offer",
+  "offer": {
+    "id": "offer-uuid",
+    "summary": "Human-readable summary for the user.",
+    "details": { /* structured offer data */ },
+    "expires": "2026-03-06T00:00:00Z",
+    "bind_endpoint": "https://provider.com/api/aip/bind",
+    "bind_requires": ["email", "full_name"]
+  }
+}</code></pre>
+      </div>
+
+      <p><strong>Response status codes:</strong></p>
+      <ul>
+        <li><code>200</code> &mdash; Successful response (status may be <code>offer</code>, <code>declined</code>, or <code>pending</code>).</li>
+        <li><code>400</code> &mdash; Invalid request (malformed JSON, schema mismatch).</li>
+        <li><code>429</code> &mdash; Rate limited.</li>
+        <li><code>500</code> &mdash; Server error.</li>
+      </ul>
+
+      <p><strong>Response statuses:</strong></p>
+      <table>
+        <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>offer</code></td><td>Successful. An offer is included in the response.</td></tr>
+          <tr><td><code>declined</code></td><td>The provider cannot serve this intake. A <code>decline_reason</code> is provided.</td></tr>
+          <tr><td><code>pending</code></td><td>The intake is being processed asynchronously. (Reserved for future use.)</td></tr>
+          <tr><td><code>error</code></td><td>An error occurred. An <code>error</code> object with code and message is provided.</td></tr>
+        </tbody>
+      </table>
+
+      <h3 id="stage-review">Stage 4: Review</h3>
+      <p>The review stage is handled entirely by the agent. The protocol does not define message formats for this stage. The agent presents the offer(s) to the user and facilitates decision-making.</p>
+
+      <h3 id="stage-bind">Stage 5: Bind</h3>
+      <p>If the user accepts an offer, the agent sends a bind request:</p>
+
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>POST {offer.bind_endpoint}
+Content-Type: application/json
+
+{
+  "offer_id": "offer-uuid",
+  "session_id": "uuid-v4",
+  "bind_data": {
+    "email": "user@example.com",
+    "full_name": "Jane Doe"
+  },
+  "agent": {
+    "id": "agent-instance-id",
+    "consent_scope": ["intake", "offer", "bind"]
+  }
+}</code></pre>
+      </div>
+
+      <p><strong>Requirements:</strong></p>
+      <ul>
+        <li>The <code>bind_data</code> MUST include all fields listed in the offer's <code>bind_requires</code> array.</li>
+        <li>The <code>consent_scope</code> MUST include <code>"bind"</code>.</li>
+        <li>The agent MUST have received explicit user authorization before sending PII.</li>
+        <li>The <code>offer_id</code> and <code>session_id</code> MUST match the original offer.</li>
+      </ul>
+
+      <!-- Schemas -->
+      <h2 id="schemas">JSON Schemas</h2>
+
+      <p>All schemas use <a href="https://json-schema.org/draft/2020-12/schema">JSON Schema Draft 2020-12</a>. The canonical schema files are in the <a href="https://github.com/agent-intake-protocol/agent-intake-protocol/tree/main/spec/2026-02-27"><code>spec/2026-02-27/</code></a> directory.</p>
+
+      <!-- Manifest Schema -->
+      <h3 id="manifest-schema">Manifest Schema: <code>agent-intake.json</code></h3>
+
+      <p>The manifest is served at <code>/.well-known/agent-intake.json</code> and describes the provider and available intakes.</p>
+
+      <h4>Top-level fields</h4>
+      <table>
+        <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>aip_version</code></td><td>string</td><td>Yes</td><td>Protocol version (semver).</td></tr>
+          <tr><td><code>provider</code></td><td>object</td><td>Yes</td><td>Provider information.</td></tr>
+          <tr><td><code>intakes</code></td><td>array</td><td>Yes</td><td>List of available intakes (min 1).</td></tr>
+          <tr><td><code>certification</code></td><td>object</td><td>No</td><td>Registry certification info.</td></tr>
+        </tbody>
+      </table>
+
+      <h4>Provider object</h4>
+      <table>
+        <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>name</code></td><td>string</td><td>Yes</td><td>Provider's display name.</td></tr>
+          <tr><td><code>url</code></td><td>string (URI)</td><td>Yes</td><td>Provider's primary URL.</td></tr>
+          <tr><td><code>description</code></td><td>string</td><td>No</td><td>Brief description of the provider.</td></tr>
+          <tr><td><code>logo</code></td><td>string (URI)</td><td>No</td><td>URL to provider's logo.</td></tr>
+          <tr><td><code>contact_email</code></td><td>string (email)</td><td>No</td><td>Contact email for AIP inquiries.</td></tr>
+        </tbody>
+      </table>
+
+      <h4>Intake object</h4>
+      <table>
+        <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>id</code></td><td>string</td><td>Yes</td><td>Unique ID (lowercase, hyphens). Pattern: <code>^[a-z0-9-]+$</code></td></tr>
+          <tr><td><code>name</code></td><td>string</td><td>Yes</td><td>Human-readable name.</td></tr>
+          <tr><td><code>description</code></td><td>string</td><td>Yes</td><td>What this intake does.</td></tr>
+          <tr><td><code>endpoint</code></td><td>string (URI)</td><td>Yes</td><td>URL to POST intake submissions to.</td></tr>
+          <tr><td><code>method</code></td><td>string</td><td>Yes</td><td>HTTP method. Must be <code>"POST"</code>.</td></tr>
+          <tr><td><code>category</code></td><td>string</td><td>No</td><td>Category (e.g., <code>health/assessment</code>).</td></tr>
+          <tr><td><code>input_schema</code></td><td>object</td><td>Yes</td><td>JSON Schema for the intake_data payload.</td></tr>
+          <tr><td><code>offer_type</code></td><td>string</td><td>Yes</td><td>Type of offer returned.</td></tr>
+          <tr><td><code>binding_available</code></td><td>boolean</td><td>Yes</td><td>Whether binding is supported.</td></tr>
+          <tr><td><code>requires_auth</code></td><td>boolean</td><td>No</td><td>Whether auth is required. Default: <code>false</code>.</td></tr>
+          <tr><td><code>privacy</code></td><td>object</td><td>No</td><td>Privacy declarations.</td></tr>
+          <tr><td><code>rate_limit</code></td><td>object</td><td>No</td><td>Rate limiting info.</td></tr>
+        </tbody>
+      </table>
+
+      <h4>Full example</h4>
+
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code class="language-json">{
+  "aip_version": "0.1.0",
+  "provider": {
+    "name": "Man vs Health",
+    "url": "https://manvshealth.com",
+    "description": "Men's metabolic health optimization"
+  },
+  "intakes": [
+    {
+      "id": "metabolic-assessment",
+      "name": "Metabolic Health Assessment",
+      "description": "Submit metabolic markers for a personalized plan.",
+      "endpoint": "https://manvshealth.com/api/aip/metabolic-assessment",
+      "method": "POST",
+      "category": "health/assessment",
+      "input_schema": {
+        "type": "object",
+        "required": ["age_range", "sex", "primary_concern"],
+        "properties": {
+          "age_range": {
+            "type": "string",
+            "enum": ["30-39", "40-49", "50-59", "60+"]
+          },
+          "sex": {
+            "type": "string",
+            "enum": ["male", "female"]
+          },
+          "primary_concern": {
+            "type": "string",
+            "enum": ["weight", "energy", "insulin_resistance", "general"]
+          },
+          "fasting_glucose_range": {
+            "type": "string",
+            "enum": ["normal", "elevated", "high", "unknown"]
+          },
+          "activity_level": {
+            "type": "string",
+            "enum": ["sedentary", "light", "moderate", "active"]
+          }
+        }
+      },
+      "offer_type": "personalized_recommendation",
+      "binding_available": true,
+      "requires_auth": false,
+      "privacy": {
+        "data_retention": "none",
+        "pii_required": false,
+        "redacted_acceptable": true
+      }
+    }
+  ],
+  "certification": {
+    "registry": "https://agentintake.io/registry",
+    "certified": true,
+    "cert_id": "aip-cert-2026-00142",
+    "expires": "2027-02-27"
+  }
+}</code></pre>
+      </div>
+
+      <!-- Intake Request Schema -->
+      <h3 id="intake-request-schema">Intake Request Schema</h3>
+
+      <table>
+        <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>aip_version</code></td><td>string</td><td>Yes</td><td>Protocol version.</td></tr>
+          <tr><td><code>agent</code></td><td>object</td><td>Yes</td><td>Agent info (id, platform, consent_scope).</td></tr>
+          <tr><td><code>intake_data</code></td><td>object</td><td>Yes</td><td>Data conforming to the intake's input_schema.</td></tr>
+          <tr><td><code>session_id</code></td><td>string (UUID)</td><td>Yes</td><td>Session identifier for correlation.</td></tr>
+          <tr><td><code>metadata</code></td><td>object</td><td>No</td><td>Optional metadata (timestamp, locale, timezone).</td></tr>
+        </tbody>
+      </table>
+
+      <h4>Agent object</h4>
+      <table>
+        <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>id</code></td><td>string</td><td>Yes</td><td>Unique agent instance identifier.</td></tr>
+          <tr><td><code>platform</code></td><td>string</td><td>No</td><td>Agent platform (e.g., "anthropic", "openai").</td></tr>
+          <tr><td><code>name</code></td><td>string</td><td>No</td><td>Human-readable agent name.</td></tr>
+          <tr><td><code>consent_scope</code></td><td>array</td><td>Yes</td><td>Authorized scopes: <code>intake</code>, <code>offer</code>, <code>bind</code>, <code>account_creation</code>, <code>payment</code>.</td></tr>
+        </tbody>
+      </table>
+
+      <!-- Offer Response Schema -->
+      <h3 id="offer-response-schema">Offer Response Schema</h3>
+
+      <table>
+        <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>aip_version</code></td><td>string</td><td>Yes</td><td>Protocol version.</td></tr>
+          <tr><td><code>session_id</code></td><td>string (UUID)</td><td>Yes</td><td>Echoed from the request.</td></tr>
+          <tr><td><code>status</code></td><td>string</td><td>Yes</td><td>One of: <code>offer</code>, <code>declined</code>, <code>error</code>, <code>pending</code>.</td></tr>
+          <tr><td><code>offer</code></td><td>object</td><td>Conditional</td><td>Required when status is <code>offer</code>.</td></tr>
+          <tr><td><code>decline_reason</code></td><td>string</td><td>No</td><td>Present when status is <code>declined</code>.</td></tr>
+          <tr><td><code>error</code></td><td>object</td><td>No</td><td>Present when status is <code>error</code>.</td></tr>
+          <tr><td><code>metadata</code></td><td>object</td><td>No</td><td>Optional response metadata.</td></tr>
+        </tbody>
+      </table>
+
+      <h4>Offer object</h4>
+      <table>
+        <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>id</code></td><td>string</td><td>Yes</td><td>Unique offer identifier.</td></tr>
+          <tr><td><code>summary</code></td><td>string</td><td>Yes</td><td>Human-readable summary for the user.</td></tr>
+          <tr><td><code>details</code></td><td>object</td><td>No</td><td>Structured offer details (varies by provider).</td></tr>
+          <tr><td><code>expires</code></td><td>string (date-time)</td><td>No</td><td>When the offer expires.</td></tr>
+          <tr><td><code>bind_endpoint</code></td><td>string (URI)</td><td>No</td><td>URL for bind requests.</td></tr>
+          <tr><td><code>bind_requires</code></td><td>array</td><td>No</td><td>Fields required for binding.</td></tr>
+          <tr><td><code>terms_url</code></td><td>string (URI)</td><td>No</td><td>Terms and conditions URL.</td></tr>
+        </tbody>
+      </table>
+
+      <!-- Bind Request Schema -->
+      <h3 id="bind-request-schema">Bind Request Schema</h3>
+
+      <table>
+        <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>offer_id</code></td><td>string</td><td>Yes</td><td>The accepted offer's ID.</td></tr>
+          <tr><td><code>session_id</code></td><td>string (UUID)</td><td>Yes</td><td>Session ID from the original intake.</td></tr>
+          <tr><td><code>bind_data</code></td><td>object</td><td>Yes</td><td>User-authorized PII data.</td></tr>
+          <tr><td><code>agent</code></td><td>object</td><td>Yes</td><td>Agent info with bind consent.</td></tr>
+          <tr><td><code>metadata</code></td><td>object</td><td>No</td><td>Optional metadata.</td></tr>
+        </tbody>
+      </table>
+
+      <h4>Common bind_data fields</h4>
+      <table>
+        <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>email</code></td><td>string (email)</td><td>User's email address.</td></tr>
+          <tr><td><code>full_name</code></td><td>string</td><td>User's full name.</td></tr>
+          <tr><td><code>phone</code></td><td>string</td><td>User's phone number.</td></tr>
+          <tr><td><code>company</code></td><td>string</td><td>Company or organization name.</td></tr>
+          <tr><td><code>address</code></td><td>object</td><td>Address with street, city, state, postal_code, country.</td></tr>
+        </tbody>
+      </table>
+
+      <!-- Error Codes -->
+      <h2 id="error-codes">Error Codes</h2>
+
+      <table>
+        <thead><tr><th>Code</th><th>HTTP Status</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>INVALID_INPUT</code></td><td>400</td><td>Request body is malformed or missing required fields.</td></tr>
+          <tr><td><code>SCHEMA_MISMATCH</code></td><td>400</td><td>intake_data does not conform to the declared input_schema.</td></tr>
+          <tr><td><code>RATE_LIMITED</code></td><td>429</td><td>Too many requests. Retry after the specified period.</td></tr>
+          <tr><td><code>SERVICE_UNAVAILABLE</code></td><td>503</td><td>The intake service is temporarily unavailable.</td></tr>
+          <tr><td><code>OFFER_EXPIRED</code></td><td>410</td><td>The referenced offer has expired.</td></tr>
+          <tr><td><code>OFFER_NOT_FOUND</code></td><td>404</td><td>The referenced offer does not exist.</td></tr>
+          <tr><td><code>BIND_INCOMPLETE</code></td><td>400</td><td>bind_data is missing required fields.</td></tr>
+          <tr><td><code>INTERNAL_ERROR</code></td><td>500</td><td>An unexpected error occurred.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code class="language-json">{
+  "aip_version": "0.1.0",
+  "session_id": "uuid-v4",
+  "status": "error",
+  "error": {
+    "code": "SCHEMA_MISMATCH",
+    "message": "Missing required field: age_range"
+  }
+}</code></pre>
+      </div>
+
+      <!-- Transport -->
+      <h2 id="transport">Transport Requirements</h2>
+
+      <ul>
+        <li><strong>Protocol</strong>: HTTPS required in production. HTTP allowed for localhost development.</li>
+        <li><strong>Content-Type</strong>: All requests and responses MUST use <code>application/json</code>.</li>
+        <li><strong>CORS</strong>: Providers SHOULD set <code>Access-Control-Allow-Origin: *</code> and handle <code>OPTIONS</code> preflight requests.</li>
+        <li><strong>Encoding</strong>: UTF-8.</li>
+        <li><strong>Request size</strong>: Providers SHOULD accept request bodies up to 64 KB.</li>
+        <li><strong>Response time</strong>: Providers SHOULD respond within 10 seconds. For longer processing, use <code>status: "pending"</code>.</li>
+      </ul>
+
+      <!-- Categories -->
+      <h2 id="categories">Standard Categories</h2>
+
+      <p>Categories follow the pattern <code>{domain}/{type}</code>:</p>
+
+      <table>
+        <thead><tr><th>Category</th><th>Description</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td><code>health/assessment</code></td><td>Health evaluations and screenings</td><td>Metabolic assessment</td></tr>
+          <tr><td><code>service/matching</code></td><td>Service provider marketplaces</td><td>Find a plumber</td></tr>
+          <tr><td><code>saas/onboarding</code></td><td>SaaS trial and setup</td><td>Project management trial</td></tr>
+          <tr><td><code>finance/quote</code></td><td>Financial quotes and estimates</td><td>Insurance quote</td></tr>
+          <tr><td><code>tool/calculator</code></td><td>Stateless calculations</td><td>BMI calculator</td></tr>
+          <tr><td><code>b2b/vendor</code></td><td>B2B vendor evaluation</td><td>Cloud hosting proposal</td></tr>
+          <tr><td><code>education/course</code></td><td>Educational programs</td><td>Curriculum recommendation</td></tr>
+        </tbody>
+      </table>
+
+      <p>Providers MAY use custom categories following the same <code>{domain}/{type}</code> pattern.</p>
+
+      <!-- Versioning -->
+      <h2 id="versioning">Versioning</h2>
+
+      <ul>
+        <li><strong>Semantic versioning</strong>: The <code>aip_version</code> field uses semver (e.g., <code>0.1.0</code>).</li>
+        <li><strong>Date snapshots</strong>: Schema files are organized by date (e.g., <code>spec/2026-02-27/</code>).</li>
+        <li>Breaking changes increment the minor version and create a new date directory.</li>
+        <li>Agents SHOULD check the <code>aip_version</code> in manifests and responses to ensure compatibility.</li>
+        <li>Providers SHOULD include <code>aip_version</code> in all responses.</li>
+      </ul>
+
+      <!-- Security -->
+      <h2 id="security">Security Considerations</h2>
+
+      <ul>
+        <li><strong>HTTPS</strong>: All production endpoints MUST use HTTPS.</li>
+        <li><strong>Input validation</strong>: Providers MUST validate intake_data against their declared input_schema.</li>
+        <li><strong>Rate limiting</strong>: Providers SHOULD implement rate limiting and declare limits in the manifest.</li>
+        <li><strong>PII handling</strong>: PII received during binding MUST be handled in accordance with applicable privacy regulations.</li>
+        <li><strong>Offer expiration</strong>: Providers SHOULD enforce offer expiration to prevent stale bindings.</li>
+        <li><strong>Agent verification</strong>: The current spec does not mandate agent authentication. Future versions may integrate with identity protocols like AGNTCY.</li>
+      </ul>
+
+    </article>
+
+    <!-- Table of Contents -->
+    <aside class="toc">
+      <div class="toc-title">Contents</div>
+      <a href="#overview">Overview</a>
+      <a href="#lifecycle">Lifecycle</a>
+      <a href="#stage-discover" class="toc-sub">Discover</a>
+      <a href="#stage-submit" class="toc-sub">Submit</a>
+      <a href="#stage-offer" class="toc-sub">Offer</a>
+      <a href="#stage-review" class="toc-sub">Review</a>
+      <a href="#stage-bind" class="toc-sub">Bind</a>
+      <a href="#schemas">JSON Schemas</a>
+      <a href="#manifest-schema" class="toc-sub">Manifest</a>
+      <a href="#intake-request-schema" class="toc-sub">Intake Request</a>
+      <a href="#offer-response-schema" class="toc-sub">Offer Response</a>
+      <a href="#bind-request-schema" class="toc-sub">Bind Request</a>
+      <a href="#error-codes">Error Codes</a>
+      <a href="#transport">Transport</a>
+      <a href="#categories">Categories</a>
+      <a href="#versioning">Versioning</a>
+      <a href="#security">Security</a>
+    </aside>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <img src="assets/img/aip-logo.svg" alt="AIP">
+        <span class="footer-text">Agent Intake Protocol &middot; v0.1.0 &middot; MIT License</span>
+      </div>
+      <ul class="footer-links">
+        <li><a href="https://github.com/agent-intake-protocol/agent-intake-protocol">GitHub</a></li>
+        <li><a href="specification.html">Specification</a></li>
+        <li><a href="whitepaper.html">White Paper</a></li>
+        <li><a href="https://agentintake.io">Registry</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

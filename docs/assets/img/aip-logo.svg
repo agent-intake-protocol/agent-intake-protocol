@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f77f00;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e36414;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Outer ring -->
+  <circle cx="60" cy="60" r="56" fill="none" stroke="url(#grad)" stroke-width="3"/>
+  <!-- Funnel shape representing intake -->
+  <path d="M 35 30 L 85 30 L 72 55 L 72 80 L 48 80 L 48 55 Z"
+        fill="url(#grad)" opacity="0.9"/>
+  <!-- Arrow entering funnel -->
+  <path d="M 60 10 L 60 25" stroke="url(#grad)" stroke-width="3" stroke-linecap="round"/>
+  <polygon points="54,22 60,30 66,22" fill="url(#grad)"/>
+  <!-- Arrow exiting funnel -->
+  <path d="M 60 85 L 60 100" stroke="url(#grad)" stroke-width="3" stroke-linecap="round"/>
+  <polygon points="54,93 60,105 66,93" fill="url(#grad)"/>
+  <!-- Connection dots -->
+  <circle cx="38" cy="42" r="3" fill="white"/>
+  <circle cx="60" cy="38" r="3" fill="white"/>
+  <circle cx="82" cy="42" r="3" fill="white"/>
+</svg>

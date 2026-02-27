@@ -1,0 +1,68 @@
+{
+  "aip_version": "0.1.0",
+  "provider": {
+    "name": "Man vs Health",
+    "url": "https://manvshealth.com",
+    "description": "Men's metabolic health optimization platform — helping men 40+ reverse insulin resistance, lose weight, and reclaim energy."
+  },
+  "intakes": [
+    {
+      "id": "metabolic-assessment",
+      "name": "Metabolic Health Assessment",
+      "description": "Submit basic metabolic markers and health concerns for a personalized optimization plan recommendation. No PII required — uses age ranges and categories.",
+      "endpoint": "https://manvshealth.com/api/aip/metabolic-assessment",
+      "method": "POST",
+      "category": "health/assessment",
+      "input_schema": {
+        "type": "object",
+        "required": ["age_range", "sex", "primary_concern"],
+        "properties": {
+          "age_range": {
+            "type": "string",
+            "enum": ["30-39", "40-49", "50-59", "60+"],
+            "description": "Age range of the individual"
+          },
+          "sex": {
+            "type": "string",
+            "enum": ["male", "female"],
+            "description": "Biological sex"
+          },
+          "primary_concern": {
+            "type": "string",
+            "enum": ["weight", "energy", "insulin_resistance", "general"],
+            "description": "Primary health concern"
+          },
+          "fasting_glucose_range": {
+            "type": "string",
+            "enum": ["normal", "elevated", "high", "unknown"],
+            "description": "Fasting glucose range (normal: <100, elevated: 100-125, high: 126+)"
+          },
+          "activity_level": {
+            "type": "string",
+            "enum": ["sedentary", "light", "moderate", "active"],
+            "description": "Current activity level"
+          },
+          "bmi_range": {
+            "type": "string",
+            "enum": ["normal", "overweight", "obese", "unknown"],
+            "description": "BMI category"
+          }
+        }
+      },
+      "offer_type": "personalized_recommendation",
+      "binding_available": true,
+      "requires_auth": false,
+      "privacy": {
+        "data_retention": "none",
+        "pii_required": false,
+        "redacted_acceptable": true
+      }
+    }
+  ],
+  "certification": {
+    "registry": "https://agentintake.io/registry",
+    "certified": true,
+    "cert_id": "aip-cert-2026-00142",
+    "expires": "2027-02-27"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "aip_version": "0.1.0",
+  "provider": {
+    "name": "WhoDo",
+    "url": "https://whodo.com",
+    "description": "Service marketplace connecting people with vetted local professionals — plumbers, electricians, cleaners, and more."
+  },
+  "intakes": [
+    {
+      "id": "service-request",
+      "name": "Find a Service Provider",
+      "description": "Describe your service need and get matched with available, vetted providers in your area. No PII needed for matching — just service type, location (zip code), and budget range.",
+      "endpoint": "https://whodo.com/api/aip/service-request",
+      "method": "POST",
+      "category": "service/matching",
+      "input_schema": {
+        "type": "object",
+        "required": ["service_type", "zip_code"],
+        "properties": {
+          "service_type": {
+            "type": "string",
+            "enum": ["plumbing", "electrical", "cleaning", "landscaping", "painting", "hvac", "roofing", "handyman", "moving", "pest_control"],
+            "description": "Type of service needed"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "Brief description of the work needed"
+          },
+          "zip_code": {
+            "type": "string",
+            "pattern": "^[0-9]{5}$",
+            "description": "5-digit US zip code for matching local providers"
+          },
+          "urgency": {
+            "type": "string",
+            "enum": ["emergency", "this_week", "this_month", "flexible"],
+            "description": "How urgent is the request"
+          },
+          "budget_range": {
+            "type": "string",
+            "enum": ["under_100", "100_500", "500_1000", "1000_5000", "over_5000", "unknown"],
+            "description": "Approximate budget range"
+          },
+          "property_type": {
+            "type": "string",
+            "enum": ["house", "apartment", "condo", "commercial", "other"],
+            "description": "Type of property"
+          }
+        }
+      },
+      "offer_type": "matched_providers",
+      "binding_available": true,
+      "requires_auth": false,
+      "privacy": {
+        "data_retention": "session",
+        "pii_required": false,
+        "redacted_acceptable": true
+      }
+    }
+  ]
+}

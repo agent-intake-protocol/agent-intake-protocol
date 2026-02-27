@@ -1,0 +1,26 @@
+{
+  "name": "@aip/sdk",
+  "version": "0.1.0",
+  "description": "Lightweight JavaScript helpers for the Agent Intake Protocol (AIP)",
+  "main": "aip-client.js",
+  "exports": {
+    "./client": "./aip-client.js",
+    "./server": "./aip-server.js"
+  },
+  "keywords": [
+    "aip",
+    "agent-intake-protocol",
+    "ai-agent",
+    "intake",
+    "protocol"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agent-intake-protocol/agent-intake-protocol"
+  },
+  "homepage": "https://agent-intake-protocol.github.io/agent-intake-protocol/",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "aip_version": "0.1.0",
+  "provider": {
+    "name": "TaskFlow",
+    "url": "https://taskflow.example.com",
+    "description": "Project management and team collaboration platform for growing teams."
+  },
+  "intakes": [
+    {
+      "id": "trial-setup",
+      "name": "Start a Free Trial",
+      "description": "Tell us about your team and workflow needs to get a pre-configured trial workspace. We'll set up integrations, templates, and team structure based on your use case.",
+      "endpoint": "https://taskflow.example.com/api/aip/trial-setup",
+      "method": "POST",
+      "category": "saas/onboarding",
+      "input_schema": {
+        "type": "object",
+        "required": ["team_size", "use_case"],
+        "properties": {
+          "team_size": {
+            "type": "string",
+            "enum": ["solo", "2-5", "6-20", "21-50", "51-200", "200+"],
+            "description": "Number of people on the team"
+          },
+          "use_case": {
+            "type": "string",
+            "enum": ["software_dev", "marketing", "design", "operations", "consulting", "general"],
+            "description": "Primary use case for the project management tool"
+          },
+          "current_tools": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["jira", "asana", "trello", "monday", "notion", "linear", "clickup", "spreadsheets", "none"]
+            },
+            "description": "Tools currently in use (for migration and integration suggestions)"
+          },
+          "integrations_needed": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["slack", "github", "gitlab", "figma", "google_workspace", "microsoft_365", "zoom", "salesforce"]
+            },
+            "description": "Third-party integrations the team needs"
+          },
+          "priority_features": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["kanban", "gantt", "time_tracking", "reporting", "automations", "custom_fields", "forms", "docs"]
+            },
+            "description": "Features that matter most to the team"
+          }
+        }
+      },
+      "offer_type": "trial_setup",
+      "binding_available": true,
+      "requires_auth": false,
+      "privacy": {
+        "data_retention": "30_days",
+        "pii_required": false,
+        "redacted_acceptable": true
+      }
+    }
+  ]
+}

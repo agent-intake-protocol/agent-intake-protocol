@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIP — Agent Intake Protocol</title>
+  <meta name="description" content="An open protocol for AI agent-mediated service intake, evaluation, and onboarding. The missing layer between tool integration and commerce.">
+  <meta property="og:title" content="Agent Intake Protocol (AIP)">
+  <meta property="og:description" content="An open protocol for AI agent-mediated service intake, evaluation, and onboarding.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="assets/img/aip-logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/img/aip-logo.svg" alt="AIP">
+        <span>AIP</span> Protocol
+      </a>
+      <button class="nav-toggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="whitepaper.html">White Paper</a></li>
+        <li><a href="specification.html">Specification</a></li>
+        <li><a href="examples.html">Examples</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="https://agentintake.io" class="nav-cta">Registry</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge">Open Protocol &middot; v0.1.0</div>
+      <h1>Give AI Agents a Front Door to Your Business</h1>
+      <p class="hero-subtitle">
+        AIP is an open, lightweight protocol that lets AI agents discover your services,
+        submit intake data on behalf of users, and receive structured offers &mdash;
+        no scraping, no forms, no phone calls.
+      </p>
+      <div class="hero-actions">
+        <a href="whitepaper.html" class="btn btn-primary">Read the White Paper</a>
+        <a href="specification.html" class="btn btn-secondary">View Specification</a>
+      </div>
+
+      <!-- Layer Stack Diagram -->
+      <div class="layer-stack">
+        <div class="layer-row">
+          <div class="layer-label">Payment</div>
+          <div class="layer-bar layer-payment">AP2, ACP</div>
+        </div>
+        <div class="layer-row">
+          <div class="layer-label">Commerce</div>
+          <div class="layer-bar layer-commerce">UCP, ACP</div>
+        </div>
+        <div class="layer-row">
+          <div class="layer-label">Intake / Offers</div>
+          <div class="layer-bar layer-intake">AIP</div>
+        </div>
+        <div class="layer-row">
+          <div class="layer-label">Agent Comms</div>
+          <div class="layer-bar layer-comms">A2A</div>
+        </div>
+        <div class="layer-row">
+          <div class="layer-label">Tool / Data</div>
+          <div class="layer-bar layer-tool">MCP</div>
+        </div>
+        <div class="layer-row">
+          <div class="layer-label">Identity / Trust</div>
+          <div class="layer-bar layer-identity">AGNTCY</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="section">
+    <div class="section-header">
+      <h2>How It Works</h2>
+      <p>Five stages. One JSON file. No LLM required on the business side.</p>
+    </div>
+
+    <div class="lifecycle">
+      <div class="lifecycle-step">
+        <div class="lifecycle-circle">1</div>
+        <div class="lifecycle-label">Discover</div>
+      </div>
+      <div class="lifecycle-arrow">&rarr;</div>
+      <div class="lifecycle-step">
+        <div class="lifecycle-circle">2</div>
+        <div class="lifecycle-label">Submit</div>
+      </div>
+      <div class="lifecycle-arrow">&rarr;</div>
+      <div class="lifecycle-step">
+        <div class="lifecycle-circle">3</div>
+        <div class="lifecycle-label">Offer</div>
+      </div>
+      <div class="lifecycle-arrow">&rarr;</div>
+      <div class="lifecycle-step">
+        <div class="lifecycle-circle">4</div>
+        <div class="lifecycle-label">Review</div>
+      </div>
+      <div class="lifecycle-arrow">&rarr;</div>
+      <div class="lifecycle-step">
+        <div class="lifecycle-circle">5</div>
+        <div class="lifecycle-label">Bind</div>
+      </div>
+    </div>
+
+    <div class="card-grid mt-4">
+      <div class="card">
+        <div class="card-icon">&#x1F50D;</div>
+        <h3>Discover</h3>
+        <p>Agent fetches <code>/.well-known/agent-intake.json</code> to learn what services are available and what data is needed.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">&#x1F4E4;</div>
+        <h3>Submit</h3>
+        <p>Agent POSTs anonymized, redacted user data to the intake endpoint. No PII required.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">&#x1F4CB;</div>
+        <h3>Offer</h3>
+        <p>Business returns a structured soft-contract &mdash; a non-binding, personalized offer.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">&#x1F914;</div>
+        <h3>Review</h3>
+        <p>Agent presents the offer to the user. User can compare offers from multiple providers.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">&#x1F91D;</div>
+        <h3>Bind</h3>
+        <p>User authorizes the agent to accept. PII is shared only at this final, opt-in stage.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Start -->
+  <section class="section-dark">
+    <div class="section-inner">
+      <div class="section-header">
+        <h2>Quick Start</h2>
+        <p>Add AIP to your site in minutes. No frameworks, no dependencies.</p>
+      </div>
+
+      <h3 style="color: var(--aip-gold);">1. Publish your manifest</h3>
+      <p>Serve this file at <code style="color: var(--aip-gold);">/.well-known/agent-intake.json</code>:</p>
+
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code class="language-json">{
+  "aip_version": "0.1.0",
+  "provider": {
+    "name": "Your Business",
+    "url": "https://yourbusiness.com",
+    "description": "What you do"
+  },
+  "intakes": [{
+    "id": "main-intake",
+    "name": "Get a Quote",
+    "description": "Submit requirements for a personalized quote",
+    "endpoint": "https://yourbusiness.com/api/aip/quote",
+    "method": "POST",
+    "category": "b2b/vendor",
+    "input_schema": {
+      "type": "object",
+      "required": ["company_size"],
+      "properties": {
+        "company_size": {
+          "type": "string",
+          "enum": ["1-10", "11-50", "51-200", "200+"]
+        }
+      }
+    },
+    "offer_type": "quote",
+    "binding_available": true,
+    "requires_auth": false,
+    "privacy": {
+      "data_retention": "none",
+      "pii_required": false,
+      "redacted_acceptable": true
+    }
+  }]
+}</code></pre>
+      </div>
+
+      <h3 style="color: var(--aip-gold);">2. Handle intake submissions</h3>
+
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code class="language-javascript">// Node.js — no frameworks required
+const http = require('node:http');
+
+http.createServer((req, res) =&gt; {
+  if (req.method === 'POST' &amp;&amp; req.url === '/api/aip/quote') {
+    let body = '';
+    req.on('data', c =&gt; body += c);
+    req.on('end', () =&gt; {
+      const { intake_data, session_id } = JSON.parse(body);
+
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({
+        aip_version: '0.1.0',
+        session_id,
+        status: 'offer',
+        offer: {
+          id: crypto.randomUUID(),
+          summary: 'Your personalized quote is ready.',
+          details: { plan: 'Pro', price: 99, currency: 'USD' },
+          expires: new Date(Date.now() + 7 * 86400000).toISOString(),
+          bind_endpoint: 'https://yourbusiness.com/api/aip/bind',
+          bind_requires: ['email', 'full_name']
+        }
+      }));
+    });
+  }
+}).listen(3000);</code></pre>
+      </div>
+
+      <p style="text-align: center; margin-top: 2rem;">
+        <a href="examples.html" class="btn btn-primary">See Full Examples</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- Why AIP -->
+  <section class="section-alt">
+    <div class="section-inner">
+      <div class="section-header">
+        <h2>Why AIP?</h2>
+        <p>The agent ecosystem has protocols for tools, communication, and commerce. It's missing the relationship layer.</p>
+      </div>
+
+      <div class="card-grid">
+        <div class="card">
+          <h3>For Businesses</h3>
+          <p>Open a structured channel for AI agents to bring you qualified leads. No bots scraping your forms. No LLM required. Just a JSON endpoint.</p>
+        </div>
+        <div class="card">
+          <h3>For Agent Developers</h3>
+          <p>Discover services programmatically. Submit structured intakes. Get back offers your users can compare and accept &mdash; all through a standard protocol.</p>
+        </div>
+        <div class="card">
+          <h3>For Users</h3>
+          <p>Let your AI agent shop for services on your behalf. Compare offers. Share PII only when you decide to commit. You are always in control.</p>
+        </div>
+      </div>
+
+      <div class="matrix mt-4">
+        <table>
+          <thead>
+            <tr>
+              <th>Capability</th>
+              <th>MCP</th>
+              <th>A2A</th>
+              <th>UCP</th>
+              <th>ACP</th>
+              <th style="color: var(--aip-orange);">AIP</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Agent discovers services</td>
+              <td class="cross">&mdash;</td>
+              <td class="partial">Peers</td>
+              <td class="check">Products</td>
+              <td class="cross">&mdash;</td>
+              <td class="check">&checkmark;</td>
+            </tr>
+            <tr>
+              <td>Structured intake submission</td>
+              <td class="cross">&mdash;</td>
+              <td class="cross">&mdash;</td>
+              <td class="cross">&mdash;</td>
+              <td class="cross">&mdash;</td>
+              <td class="check">&checkmark;</td>
+            </tr>
+            <tr>
+              <td>Non-binding offers (soft-contracts)</td>
+              <td class="cross">&mdash;</td>
+              <td class="cross">&mdash;</td>
+              <td class="cross">&mdash;</td>
+              <td class="cross">&mdash;</td>
+              <td class="check">&checkmark;</td>
+            </tr>
+            <tr>
+              <td>Privacy-first (no PII at intake)</td>
+              <td class="partial">N/A</td>
+              <td class="partial">N/A</td>
+              <td class="cross">&mdash;</td>
+              <td class="cross">&mdash;</td>
+              <td class="check">&checkmark;</td>
+            </tr>
+            <tr>
+              <td>User opt-in binding</td>
+              <td class="cross">&mdash;</td>
+              <td class="cross">&mdash;</td>
+              <td class="cross">&mdash;</td>
+              <td class="partial">Checkout</td>
+              <td class="check">&checkmark;</td>
+            </tr>
+            <tr>
+              <td>Works without LLM on business side</td>
+              <td class="check">&checkmark;</td>
+              <td class="cross">Requires agent</td>
+              <td class="check">&checkmark;</td>
+              <td class="check">&checkmark;</td>
+              <td class="check">&checkmark;</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Use Cases -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Use Cases</h2>
+      <p>AIP is intentionally broad. Any business with an intake process can benefit.</p>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">&#x2764;</div>
+        <h3>Health &amp; Wellness</h3>
+        <p>Submit health markers, get personalized care plans. <span class="badge badge-orange">Binding</span></p>
+      </div>
+      <div class="card">
+        <div class="card-icon">&#x1F527;</div>
+        <h3>Service Marketplaces</h3>
+        <p>Describe your project, get matched with vetted local providers. <span class="badge badge-orange">Binding</span></p>
+      </div>
+      <div class="card">
+        <div class="card-icon">&#x1F4BB;</div>
+        <h3>SaaS Onboarding</h3>
+        <p>Share your team profile, get a pre-configured trial workspace. <span class="badge badge-orange">Binding</span></p>
+      </div>
+      <div class="card">
+        <div class="card-icon">&#x1F4B0;</div>
+        <h3>Financial Services</h3>
+        <p>Submit coverage needs, receive insurance quotes instantly. <span class="badge badge-orange">Binding</span></p>
+      </div>
+      <div class="card">
+        <div class="card-icon">&#x1F9EE;</div>
+        <h3>Calculators &amp; Tools</h3>
+        <p>BMI, mortgage, ROI calculators. Stateless results, no account needed. <span class="badge badge-green">Non-binding</span></p>
+      </div>
+      <div class="card">
+        <div class="card-icon">&#x1F3EB;</div>
+        <h3>Education</h3>
+        <p>Share goals and skill level, get personalized curriculum recommendations. <span class="badge badge-orange">Binding</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Get Certified -->
+  <section class="section-dark">
+    <div class="section-inner text-center">
+      <h2>Get Certified</h2>
+      <p style="color: var(--text-on-dark); max-width: 600px; margin: 1rem auto 2rem;">
+        The <strong>AIP Registry</strong> at <a href="https://agentintake.io" style="color: var(--aip-gold);">agentintake.io</a> validates and certifies AIP-compliant endpoints, providing trust signals to agents and a directory for discovery.
+      </p>
+      <a href="https://agentintake.io" class="btn btn-primary">Visit the Registry</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <img src="assets/img/aip-logo.svg" alt="AIP">
+        <span class="footer-text">Agent Intake Protocol &middot; v0.1.0 &middot; MIT License</span>
+      </div>
+      <ul class="footer-links">
+        <li><a href="https://github.com/agent-intake-protocol/agent-intake-protocol">GitHub</a></li>
+        <li><a href="specification.html">Specification</a></li>
+        <li><a href="whitepaper.html">White Paper</a></li>
+        <li><a href="https://agentintake.io">Registry</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
