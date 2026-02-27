@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ — Agent Intake Protocol</title>
+  <meta name="description" content="Frequently asked questions about the Agent Intake Protocol (AIP) — what it is, how it works, and how it compares to MCP, A2A, and other protocols.">
+  <link rel="icon" href="assets/img/aip-logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    .faq-section { margin-bottom: 3rem; }
+    .faq-item { border-bottom: 1px solid var(--border-light); padding: 1.5rem 0; }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-q {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+    .faq-q::before {
+      content: 'Q';
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--aip-light-orange);
+      color: var(--aip-orange);
+      font-size: 0.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+    .faq-a {
+      padding-left: 2.8rem;
+      margin-top: 0.75rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+    .faq-a code { font-size: 0.85em; }
+    .faq-category {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--aip-orange);
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/img/aip-logo.svg" alt="AIP">
+        <span>AIP</span> Protocol
+      </a>
+      <button class="nav-toggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="whitepaper.html">White Paper</a></li>
+        <li><a href="specification.html">Specification</a></li>
+        <li><a href="examples.html">Examples</a></li>
+        <li><a href="faq.html" class="active">FAQ</a></li>
+        <li><a href="https://agentintake.io" class="nav-cta">Registry</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Content -->
+  <div class="prose">
+    <h1>Frequently Asked Questions</h1>
+    <p class="text-muted" style="font-size: 1.1rem; margin-bottom: 3rem;">
+      Everything you need to know about AIP &mdash; from "what is it?" to "how do I implement it?"
+    </p>
+
+    <!-- General -->
+    <div class="faq-section">
+      <div class="faq-category">General</div>
+
+      <div class="faq-item">
+        <div class="faq-q">What is AIP?</div>
+        <div class="faq-a">
+          <p>The Agent Intake Protocol (AIP) is an open standard that lets AI agents interact with businesses on behalf of users. Instead of filling out web forms or making phone calls, an agent can discover a business's AIP endpoint, submit structured intake data, and receive a personalized offer &mdash; all through a simple JSON API.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">What problem does AIP solve?</div>
+        <div class="faq-a">
+          <p>Today, AI agents interact with businesses the same way humans do &mdash; navigating websites, filling forms, scraping content. There's no standardized way for an agent to say: <em>"I represent a user. Here's their context. What can you offer?"</em> AIP provides that standard channel.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">What's a "soft-contract"?</div>
+        <div class="faq-a">
+          <p>A soft-contract is a structured, non-binding offer from a business in response to an intake submission. Think of it like a personalized quote: it has details, pricing, an expiration date, and terms &mdash; but it's not a commitment from either side. The user reviews it, and only if they choose to <strong>bind</strong> does the relationship begin.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Is AIP free to use?</div>
+        <div class="faq-a">
+          <p>Yes. The protocol is MIT-licensed and free to implement. The <a href="https://agentintake.io">AIP Registry</a> is a separate, optional certification service for businesses that want to be discoverable and verified.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Who created AIP?</div>
+        <div class="faq-a">
+          <p>AIP was created by <a href="https://manvshealth.com">Man vs Health</a> to solve a real problem: enabling AI agents to onboard users into health services without scraping, phone trees, or manual form-filling. It's published as an open standard for anyone to adopt.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- How It Compares -->
+    <div class="faq-section">
+      <div class="faq-category">How AIP Compares</div>
+
+      <div class="faq-item">
+        <div class="faq-q">How is AIP different from MCP (Model Context Protocol)?</div>
+        <div class="faq-a">
+          <p>MCP connects AI models to tools and data sources &mdash; it's about giving an LLM the ability to call functions and access context. AIP operates at a higher layer: it's about an agent representing a <em>user</em> in a business intake process. MCP might help an agent use a tool; AIP helps an agent find a service, submit an application, and get an offer back.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">How is AIP different from A2A (Agent-to-Agent)?</div>
+        <div class="faq-a">
+          <p>Google's A2A protocol enables agents to communicate with each other &mdash; peer-to-peer messaging between AI systems. AIP is specifically about the agent-to-business relationship: structured intake, evaluation, and onboarding. A2A could be a transport layer <em>under</em> AIP in some architectures, but they solve different problems.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">What about UCP and ACP?</div>
+        <div class="faq-a">
+          <p><strong>UCP</strong> (Universal Commerce Protocol) and <strong>ACP</strong> (Agent Commerce Protocol) focus on product commerce &mdash; shopping, checkout, payments. AIP focuses on <em>services</em>, not products. The intake process for a healthcare provider, law firm, or SaaS platform is fundamentally different from buying a product. AIP handles the discovery, evaluation, and onboarding; commerce protocols can handle the payment that follows.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Can AIP work alongside other protocols?</div>
+        <div class="faq-a">
+          <p>Absolutely. AIP is designed as one layer in a stack:</p>
+          <ul>
+            <li><strong>MCP</strong> for tool/data access</li>
+            <li><strong>A2A</strong> for agent communication</li>
+            <li><strong>AIP</strong> for service intake and offers</li>
+            <li><strong>UCP/ACP</strong> for commerce and payment</li>
+          </ul>
+          <p>They're complementary, not competing.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- For Businesses -->
+    <div class="faq-section">
+      <div class="faq-category">For Businesses</div>
+
+      <div class="faq-item">
+        <div class="faq-q">How hard is it to implement AIP?</div>
+        <div class="faq-a">
+          <p>Minimal effort. You need:</p>
+          <ol>
+            <li>A JSON manifest file served at <code>/.well-known/agent-intake.json</code></li>
+            <li>One or more POST endpoints that accept intake data and return offers</li>
+          </ol>
+          <p>No LLM required. No special framework. If you can serve JSON from an HTTP endpoint, you can implement AIP. See the <a href="examples.html">examples</a> for complete implementations in ~100 lines of Node.js.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Do I need AI on my side?</div>
+        <div class="faq-a">
+          <p>No. Your intake endpoint is just a regular API. You can use simple business logic, rule-based matching, database lookups, or even return a static offer. The AI is on the <em>agent</em> side &mdash; your side just needs to speak JSON.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">What's the AIP Registry?</div>
+        <div class="faq-a">
+          <p>The <a href="https://agentintake.io">AIP Registry</a> at agentintake.io is an optional certification service. It crawls and validates your AIP endpoint, verifies your manifest conforms to the spec, and lists you in a directory that agents can query for discovery. Think of it like an SSL certificate but for your AIP implementation &mdash; a trust signal.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">How do agents find my AIP endpoint?</div>
+        <div class="faq-a">
+          <p>Three ways:</p>
+          <ol>
+            <li><strong>Well-known URL:</strong> Agents can check <code>yourdomain.com/.well-known/agent-intake.json</code> directly (like robots.txt)</li>
+            <li><strong>Registry:</strong> Agents query the AIP Registry for providers by category, location, or capability</li>
+            <li><strong>Direct link:</strong> You can share your manifest URL anywhere &mdash; documentation, social media, or in your marketing</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- Privacy & Security -->
+    <div class="faq-section">
+      <div class="faq-category">Privacy &amp; Security</div>
+
+      <div class="faq-item">
+        <div class="faq-q">Does AIP require sharing personal information?</div>
+        <div class="faq-a">
+          <p>No. AIP is <strong>privacy-first by design</strong>. During the intake phase, agents submit anonymized, categorical data &mdash; things like age ranges, zip codes, and preference categories instead of exact values. Personal information (name, email, phone) only flows at the <strong>bind</strong> stage, after the user has reviewed the offer and explicitly opted in.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">What is "binding" and when does it happen?</div>
+        <div class="faq-a">
+          <p>Binding is the final, user-initiated step where they accept an offer. Only at this point does the agent share PII (whatever the business declared in <code>bind_requires</code>). The user is always in control &mdash; the agent presents the offer, the user decides whether to proceed.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Can a business require PII at intake?</div>
+        <div class="faq-a">
+          <p>Technically, a manifest can set <code>pii_required: true</code>, but this is discouraged. The spec strongly recommends <code>pii_required: false</code> and <code>redacted_acceptable: true</code> for the intake phase. Agents may skip endpoints that require PII upfront, and the Registry may flag them during certification.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">What about rate limiting and abuse?</div>
+        <div class="faq-a">
+          <p>AIP endpoints are standard HTTP APIs, so all normal protections apply &mdash; rate limiting, API keys, IP throttling, CAPTCHA for binding, etc. The manifest can also declare <code>requires_auth: true</code> if the endpoint needs authentication. The Registry provides additional trust signals through certification.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Technical -->
+    <div class="faq-section">
+      <div class="faq-category">Technical</div>
+
+      <div class="faq-item">
+        <div class="faq-q">What does a minimal AIP implementation look like?</div>
+        <div class="faq-a">
+          <p>Two files:</p>
+          <ol>
+            <li><strong>Manifest</strong> (<code>/.well-known/agent-intake.json</code>) &mdash; describes your intakes, their schemas, and privacy policies</li>
+            <li><strong>Endpoint handler</strong> &mdash; accepts POST requests with intake data, returns structured offers</li>
+          </ol>
+          <p>The <a href="examples.html#calculator">BMI calculator example</a> is a complete implementation in under 80 lines.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">What schema format does AIP use?</div>
+        <div class="faq-a">
+          <p><a href="https://json-schema.org/draft/2020-12/schema">JSON Schema Draft 2020-12</a>. The manifest's <code>input_schema</code> field defines what data the intake endpoint expects, using standard JSON Schema validation. This means agents can validate data before submission and generate UIs dynamically.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Is there an SDK?</div>
+        <div class="faq-a">
+          <p>Yes. The repo includes a lightweight JavaScript SDK with both client and server helpers. The client handles discovery, submission, and binding. The server provides manifest serving, request validation, and response formatting. See <a href="https://github.com/agent-intake-protocol/agent-intake-protocol/tree/main/sdk/js"><code>sdk/js/</code></a>.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Can I have multiple intakes per manifest?</div>
+        <div class="faq-a">
+          <p>Yes. The <code>intakes</code> array in your manifest can contain as many intake definitions as you need. A healthcare provider might offer a metabolic assessment, a sleep evaluation, and a nutrition consultation &mdash; each as a separate intake with its own schema, endpoint, and privacy settings.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">How is AIP versioned?</div>
+        <div class="faq-a">
+          <p>AIP uses semantic versioning (currently <code>0.1.0</code>). Spec snapshots live in date-stamped directories (<code>spec/2026-02-27/</code>). Both the manifest and all request/response payloads include an <code>aip_version</code> field for compatibility checking.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Getting Started -->
+    <div class="faq-section">
+      <div class="faq-category">Getting Started</div>
+
+      <div class="faq-item">
+        <div class="faq-q">I'm a business. Where do I start?</div>
+        <div class="faq-a">
+          <ol>
+            <li>Read the <a href="specification.html">Specification</a> (10 min)</li>
+            <li>Check the <a href="examples.html">Examples</a> for your closest use case</li>
+            <li>Create your <code>agent-intake.json</code> manifest</li>
+            <li>Build your intake endpoint</li>
+            <li>(Optional) Register at <a href="https://agentintake.io">agentintake.io</a> for certification</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">I'm an agent developer. Where do I start?</div>
+        <div class="faq-a">
+          <ol>
+            <li>Read the <a href="specification.html">Specification</a> to understand the protocol lifecycle</li>
+            <li>Use the <a href="https://github.com/agent-intake-protocol/agent-intake-protocol/tree/main/sdk/js">JS SDK</a> or implement discovery/submission directly</li>
+            <li>Query <code>/.well-known/agent-intake.json</code> on target domains</li>
+            <li>(Optional) Use the <a href="https://agentintake.io">Registry API</a> to discover certified providers</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">How can I contribute?</div>
+        <div class="faq-a">
+          <p>AIP is open source and we welcome contributions. See <a href="https://github.com/agent-intake-protocol/agent-intake-protocol/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a> for guidelines. You can help by implementing AIP for your business, building SDKs in other languages, proposing spec improvements, or sharing feedback via GitHub Issues.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align: center; padding: 2rem 0 3rem; border-top: 1px solid var(--border-light); margin-top: 2rem;">
+      <p style="color: var(--text-secondary);">Still have questions?</p>
+      <p><a href="https://github.com/agent-intake-protocol/agent-intake-protocol/issues">Open an issue on GitHub</a></p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <img src="assets/img/aip-logo.svg" alt="AIP">
+        <span class="footer-text">Agent Intake Protocol &middot; v0.1.0 &middot; MIT License</span>
+      </div>
+      <ul class="footer-links">
+        <li><a href="https://github.com/agent-intake-protocol/agent-intake-protocol">GitHub</a></li>
+        <li><a href="specification.html">Specification</a></li>
+        <li><a href="whitepaper.html">White Paper</a></li>
+        <li><a href="https://agentintake.io">Registry</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

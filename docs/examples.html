@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Examples — Agent Intake Protocol</title>
+  <meta name="description" content="Working AIP implementation examples — health assessment, service matching, SaaS onboarding, and calculators.">
+  <link rel="icon" href="assets/img/aip-logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/img/aip-logo.svg" alt="AIP">
+        <span>AIP</span> Protocol
+      </a>
+      <button class="nav-toggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="whitepaper.html">White Paper</a></li>
+        <li><a href="specification.html">Specification</a></li>
+        <li><a href="examples.html" class="active">Examples</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="https://agentintake.io" class="nav-cta">Registry</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <section class="hero" style="padding-bottom: 3rem;">
+    <div class="hero-inner">
+      <div class="hero-badge">4 Working Examples</div>
+      <h1 style="font-size: 2.8rem;">Examples</h1>
+      <p class="hero-subtitle">
+        Complete, runnable AIP implementations covering different industries and use cases.
+        Each includes a manifest, server, and README.
+      </p>
+    </div>
+  </section>
+
+  <!-- Examples Overview -->
+  <section class="section">
+    <div class="section-header">
+      <h2 style="margin-top: 0;">Pick Your Use Case</h2>
+      <p>Every example is a standalone Node.js server you can run locally. No dependencies beyond Node itself.</p>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">&#x2764;</div>
+        <h3>Health Assessment</h3>
+        <p>Metabolic health intake for men 40+. Anonymized health markers in, personalized plan recommendations out.</p>
+        <p style="margin-top: 0.75rem;">
+          <span class="badge badge-orange">Binding</span>
+          <span class="badge badge-blue">health/assessment</span>
+        </p>
+        <p style="margin-top: 1rem;"><a href="#health-assessment">Jump to example &darr;</a></p>
+      </div>
+      <div class="card">
+        <div class="card-icon">&#x1F527;</div>
+        <h3>Service Matching</h3>
+        <p>Service marketplace that matches users with vetted local providers based on service type, location, and budget.</p>
+        <p style="margin-top: 0.75rem;">
+          <span class="badge badge-orange">Binding</span>
+          <span class="badge badge-blue">service/matching</span>
+        </p>
+        <p style="margin-top: 1rem;"><a href="#service-matching">Jump to example &darr;</a></p>
+      </div>
+      <div class="card">
+        <div class="card-icon">&#x1F4BB;</div>
+        <h3>SaaS Onboarding</h3>
+        <p>Pre-configured trial workspace setup based on team size, use case, and integration needs.</p>
+        <p style="margin-top: 0.75rem;">
+          <span class="badge badge-orange">Binding</span>
+          <span class="badge badge-blue">saas/onboarding</span>
+        </p>
+        <p style="margin-top: 1rem;"><a href="#saas-onboarding">Jump to example &darr;</a></p>
+      </div>
+      <div class="card">
+        <div class="card-icon">&#x1F9EE;</div>
+        <h3>BMI Calculator</h3>
+        <p>Stateless health calculator. No binding, no account &mdash; submit numbers, get results.</p>
+        <p style="margin-top: 0.75rem;">
+          <span class="badge badge-green">Non-binding</span>
+          <span class="badge badge-blue">tool/calculator</span>
+        </p>
+        <p style="margin-top: 1rem;"><a href="#calculator">Jump to example &darr;</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Running Examples -->
+  <section class="section-dark">
+    <div class="section-inner">
+      <div class="section-header">
+        <h2 style="margin-top: 0;">Running the Examples</h2>
+        <p style="color: var(--text-on-dark);">Clone the repo and start any example in seconds.</p>
+      </div>
+
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>git clone https://github.com/agent-intake-protocol/agent-intake-protocol.git
+cd agent-intake-protocol/examples/health-assessment
+node server.js</code></pre>
+      </div>
+
+      <p>Each server exposes two endpoints:</p>
+      <ul style="padding-left: 1.5rem; margin-bottom: 1.5rem;">
+        <li><code style="color: var(--aip-gold);">GET /.well-known/agent-intake.json</code> &mdash; Discovery manifest</li>
+        <li><code style="color: var(--aip-gold);">POST /api/aip/&lt;endpoint&gt;</code> &mdash; Intake submission</li>
+      </ul>
+      <p>Test with curl:</p>
+
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code># Discover
+curl http://localhost:3000/.well-known/agent-intake.json
+
+# Submit intake
+curl -X POST http://localhost:3000/api/aip/metabolic-assessment \
+  -H "Content-Type: application/json" \
+  -d '{
+    "aip_version": "0.1.0",
+    "session_id": "test-001",
+    "intake_id": "metabolic-assessment",
+    "intake_data": {
+      "age_range": "40-49",
+      "sex": "male",
+      "primary_concern": "insulin_resistance",
+      "fasting_glucose_range": "elevated",
+      "activity_level": "sedentary",
+      "bmi_range": "overweight"
+    }
+  }'</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Health Assessment -->
+  <section class="section" id="health-assessment">
+    <h2>&#x2764; Health Assessment</h2>
+    <p>A metabolic health platform for men 40+. The agent submits anonymized health markers (age range, glucose range, BMI category) and receives a personalized optimization plan.</p>
+
+    <h3>Manifest</h3>
+    <p>Key design choices: all inputs use ranges/categories instead of exact values, no PII required, and the privacy block explicitly declares <code>data_retention: "none"</code>.</p>
+
+    <div class="code-block">
+      <button class="copy-btn">Copy</button>
+      <pre><code class="language-json">{
+  "aip_version": "0.1.0",
+  "provider": {
+    "name": "Man vs Health",
+    "url": "https://manvshealth.com",
+    "description": "Men's metabolic health optimization platform"
+  },
+  "intakes": [{
+    "id": "metabolic-assessment",
+    "name": "Metabolic Health Assessment",
+    "description": "Submit basic metabolic markers for a personalized plan",
+    "endpoint": "https://manvshealth.com/api/aip/metabolic-assessment",
+    "method": "POST",
+    "category": "health/assessment",
+    "input_schema": {
+      "type": "object",
+      "required": ["age_range", "sex", "primary_concern"],
+      "properties": {
+        "age_range": { "type": "string", "enum": ["30-39", "40-49", "50-59", "60+"] },
+        "sex": { "type": "string", "enum": ["male", "female"] },
+        "primary_concern": { "type": "string", "enum": ["weight", "energy", "insulin_resistance", "general"] },
+        "fasting_glucose_range": { "type": "string", "enum": ["normal", "elevated", "high", "unknown"] },
+        "activity_level": { "type": "string", "enum": ["sedentary", "light", "moderate", "active"] },
+        "bmi_range": { "type": "string", "enum": ["normal", "overweight", "obese", "unknown"] }
+      }
+    },
+    "offer_type": "personalized_recommendation",
+    "binding_available": true,
+    "requires_auth": false,
+    "privacy": { "data_retention": "none", "pii_required": false, "redacted_acceptable": true }
+  }]
+}</code></pre>
+    </div>
+
+    <h3>Response</h3>
+    <p>The server analyzes the intake data and returns a structured offer with a personalized plan, risk assessment, and recommended actions. If the user wants to proceed, they bind with their email and name.</p>
+
+    <div class="code-block">
+      <button class="copy-btn">Copy</button>
+      <pre><code class="language-json">{
+  "aip_version": "0.1.0",
+  "session_id": "test-001",
+  "status": "offer",
+  "offer": {
+    "id": "offer-abc123",
+    "summary": "Based on your profile, we recommend our Metabolic Reset program.",
+    "details": {
+      "plan": "Metabolic Reset — 12 Week Program",
+      "focus_areas": ["insulin sensitivity", "body composition", "energy optimization"],
+      "risk_level": "moderate",
+      "estimated_duration": "12 weeks",
+      "price": 197,
+      "currency": "USD"
+    },
+    "expires": "2026-03-06T12:00:00Z",
+    "bind_endpoint": "https://manvshealth.com/api/aip/bind",
+    "bind_requires": ["email", "full_name"]
+  }
+}</code></pre>
+    </div>
+
+    <p><a href="https://github.com/agent-intake-protocol/agent-intake-protocol/tree/main/examples/health-assessment">View full source on GitHub &rarr;</a></p>
+  </section>
+
+  <!-- Service Matching -->
+  <section class="section-alt" id="service-matching">
+    <div class="section-inner">
+      <h2>&#x1F527; Service Matching</h2>
+      <p>A marketplace that connects users with vetted local service providers. The agent submits a service request with type, zip code, and budget range &mdash; and gets back matched providers ranked by fit.</p>
+
+      <h3>Manifest Highlights</h3>
+      <ul>
+        <li><strong>Category:</strong> <code>service/matching</code></li>
+        <li><strong>Location:</strong> Uses zip code (not full address) for privacy</li>
+        <li><strong>10 service types:</strong> plumbing, electrical, cleaning, landscaping, painting, HVAC, roofing, handyman, moving, pest control</li>
+        <li><strong>Urgency levels:</strong> emergency → flexible</li>
+        <li><strong>Data retention:</strong> <code>session</code> (cleared after matching)</li>
+      </ul>
+
+      <h3>Response</h3>
+      <p>Returns 1-3 matched providers with ratings, availability, and estimated price ranges. The user reviews matches before binding to share contact info with their chosen provider.</p>
+
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code class="language-json">{
+  "status": "offer",
+  "offer": {
+    "summary": "We found 3 plumbers in your area.",
+    "details": {
+      "matches": [
+        {
+          "provider": "Johnson Plumbing",
+          "rating": 4.8,
+          "reviews": 142,
+          "available": "this_week",
+          "estimate": "$150–$300"
+        }
+      ],
+      "total_matches": 3
+    },
+    "bind_requires": ["full_name", "phone", "address"]
+  }
+}</code></pre>
+      </div>
+
+      <p><a href="https://github.com/agent-intake-protocol/agent-intake-protocol/tree/main/examples/service-matching">View full source on GitHub &rarr;</a></p>
+    </div>
+  </section>
+
+  <!-- SaaS Onboarding -->
+  <section class="section" id="saas-onboarding">
+    <h2>&#x1F4BB; SaaS Onboarding</h2>
+    <p>A project management tool that pre-configures trial workspaces based on team profile. The agent submits team size, use case, current tools, and needed integrations &mdash; and gets back a ready-to-go trial offer.</p>
+
+    <h3>Manifest Highlights</h3>
+    <ul>
+      <li><strong>Category:</strong> <code>saas/onboarding</code></li>
+      <li><strong>Smart inputs:</strong> current tools (for migration), integrations needed, priority features</li>
+      <li><strong>Data retention:</strong> <code>30_days</code> (trial duration)</li>
+      <li><strong>No PII at intake:</strong> team profile only, email at bind</li>
+    </ul>
+
+    <h3>Response</h3>
+    <p>Returns a pre-configured workspace offer with selected plan, enabled integrations, migration path from current tools, and a direct setup URL at bind time.</p>
+
+    <div class="code-block">
+      <button class="copy-btn">Copy</button>
+      <pre><code class="language-json">{
+  "status": "offer",
+  "offer": {
+    "summary": "Your 14-day trial workspace is ready to configure.",
+    "details": {
+      "plan": "Team",
+      "seats": 15,
+      "features_enabled": ["kanban", "gantt", "time_tracking", "automations"],
+      "integrations": ["slack", "github"],
+      "migration_from": "jira",
+      "trial_days": 14
+    },
+    "bind_requires": ["email", "company_name"]
+  }
+}</code></pre>
+    </div>
+
+    <p><a href="https://github.com/agent-intake-protocol/agent-intake-protocol/tree/main/examples/saas-onboarding">View full source on GitHub &rarr;</a></p>
+  </section>
+
+  <!-- Calculator -->
+  <section class="section-alt" id="calculator">
+    <div class="section-inner">
+      <h2>&#x1F9EE; BMI Calculator</h2>
+      <p>The simplest possible AIP implementation &mdash; a stateless calculator. No binding, no account, no PII. Submit height and weight, get a BMI result. Demonstrates that AIP handles non-binding, utility-style interactions too.</p>
+
+      <h3>Manifest Highlights</h3>
+      <ul>
+        <li><strong>Category:</strong> <code>tool/calculator</code></li>
+        <li><strong>Offer type:</strong> <code>computed_result</code></li>
+        <li><strong>Binding:</strong> <code>false</code> &mdash; no follow-up, no account</li>
+        <li><strong>Data retention:</strong> <code>none</code></li>
+      </ul>
+
+      <h3>Response</h3>
+
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code class="language-json">{
+  "status": "complete",
+  "offer": {
+    "summary": "Your BMI is 27.5 (Overweight).",
+    "details": {
+      "bmi": 27.5,
+      "category": "Overweight",
+      "healthy_range": "18.5–24.9",
+      "note": "BMI is a screening tool, not a diagnostic measure."
+    },
+    "expires": null,
+    "bind_endpoint": null
+  }
+}</code></pre>
+      </div>
+
+      <p><a href="https://github.com/agent-intake-protocol/agent-intake-protocol/tree/main/examples/calculator">View full source on GitHub &rarr;</a></p>
+    </div>
+  </section>
+
+  <!-- Build Your Own -->
+  <section class="section-dark">
+    <div class="section-inner text-center">
+      <h2>Build Your Own</h2>
+      <p style="color: var(--text-on-dark); max-width: 600px; margin: 1rem auto 2rem;">
+        These examples are starting points. AIP works for any business with an intake process &mdash;
+        legal, financial, education, real estate, you name it.
+      </p>
+      <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+        <a href="specification.html" class="btn btn-secondary" style="border-color: rgba(255,255,255,0.2); color: white;">Read the Spec</a>
+        <a href="https://github.com/agent-intake-protocol/agent-intake-protocol" class="btn btn-primary">Fork on GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <img src="assets/img/aip-logo.svg" alt="AIP">
+        <span class="footer-text">Agent Intake Protocol &middot; v0.1.0 &middot; MIT License</span>
+      </div>
+      <ul class="footer-links">
+        <li><a href="https://github.com/agent-intake-protocol/agent-intake-protocol">GitHub</a></li>
+        <li><a href="specification.html">Specification</a></li>
+        <li><a href="whitepaper.html">White Paper</a></li>
+        <li><a href="https://agentintake.io">Registry</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
