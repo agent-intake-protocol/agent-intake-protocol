@@ -286,6 +286,43 @@
       </div>
     </div>
 
+    <!-- Multi-Intake -->
+    <div class="faq-section">
+      <div class="faq-category">Real-World Patterns</div>
+
+      <div class="faq-item">
+        <div class="faq-q">How does AIP handle a business with multiple, different service offerings?</div>
+        <div class="faq-a">
+          <p>This is one of AIP's core strengths. A single manifest can expose <strong>multiple intakes</strong>, each with its own schema, endpoint, category, and privacy settings &mdash; all under one <code>/.well-known/agent-intake.json</code> file.</p>
+          <p>Consider a health &amp; wellness business that offers four distinct services:</p>
+          <ul>
+            <li><strong>Medical Intake</strong> &mdash; collects health markers and symptoms → returns a soft-contract for a medical consultation with labs and a treatment plan</li>
+            <li><strong>Nutrition Intake</strong> &mdash; collects dietary habits and goals → returns a personalized nutrition plan offer</li>
+            <li><strong>Fitness Intake</strong> &mdash; collects activity level and objectives → returns a structured fitness program offer</li>
+            <li><strong>Jumpstart Intake</strong> &mdash; collects a broad health snapshot → returns an offer for a coaching visit and personalized action plan</li>
+          </ul>
+          <p>Each of these has different input data, different output offers, and potentially different binding requirements (a medical intake might require more PII at bind than a fitness plan). In AIP, they're all entries in the <code>intakes</code> array:</p>
+
+          <pre style="font-size: 0.85rem;"><code>{
+  "aip_version": "0.1.0",
+  "provider": {
+    "name": "Man vs Health",
+    "url": "https://manvshealth.com"
+  },
+  "intakes": [
+    { "id": "medical-consult", "category": "health/medical", ... },
+    { "id": "nutrition-plan",  "category": "health/nutrition", ... },
+    { "id": "fitness-plan",    "category": "health/fitness", ... },
+    { "id": "jumpstart",       "category": "health/coaching", ... }
+  ]
+}</code></pre>
+
+          <p><strong>The agent decides which intake to use</strong> based on the user's needs, the intake descriptions, and the input schemas. If someone says <em>"I want to lose weight and fix my blood sugar"</em>, the agent might submit to the medical intake. If they say <em>"I need a workout plan"</em>, it's the fitness intake. If they're not sure where to start, the jumpstart intake exists exactly for that.</p>
+          <p>This means a single AIP-enabled business can serve as <strong>multiple specialized endpoints</strong> without the agent needing to navigate a website, click through a funnel, or guess which form to fill out. The manifest <em>is</em> the menu. The agent picks the right door.</p>
+        </div>
+      </div>
+    </div>
+
     <!-- Getting Started -->
     <div class="faq-section">
       <div class="faq-category">Getting Started</div>
